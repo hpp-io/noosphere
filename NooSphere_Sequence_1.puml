@@ -1,0 +1,41 @@
+@startuml
+autonumber
+
+actor "End User (dApp)" as User
+participant "NooSphere Hub" as Chain
+participant "Consumer Contract" as Contract
+participant "NooSphere Node" as Node
+participant "AI Model Processor" as AI
+
+User -> Chain ++: Submits request to NooSphere Hub.
+note right of Chain: This calls `requestCompute` method via API.
+
+Chain -> Contract ++: This executes `processRequestCompute(requestId)` on Smart Contract via SDK
+
+Contract -> Contract ++: Execute contract (update state, process payments).
+
+Contract -> Chain ++: Return execute results.
+
+Chain -> Node ++: Emits `Compute(requestId, ...)` event via API.
+note left of Node: NooSphere Node is actively listening for events from the NooSphere Hub.
+Chain --> Node --: Receives `Compute` event
+
+Node -> AI ++: Perform off-chain computation.
+AI --> Node --: Return computation result.
+
+Node -> Node: Generate proof of computation.
+
+Node -> Chain ++: Submits result & proof to NooSphere Hub's `responseCompute` method via API.
+note right of Chain: Verifies the proof and the node's authority.
+
+Chain -> Contract ++: This executes `processResponseCompute(requestId, result)` on Smart Contract via SDK
+Contract -> Contract ++: Execute contract (update state, process payments).
+
+Contract -> Chain ++: Return execute results.
+Chain -> User: Return execute results to User.
+
+deactivate Contract
+
+deactivate Chain
+
+@enduml
