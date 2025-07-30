@@ -3,7 +3,7 @@ autonumber
 
 actor "End User (dApp)" as User
 participant "NooSphere Hub" as Chain
-participant "Consumer Contract" as Contract
+participant "Smart Contract" as Contract
 participant "NooSphere Node" as Node
 participant "AI Model Processor" as AI
 
