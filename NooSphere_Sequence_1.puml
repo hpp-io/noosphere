@@ -1,5 +1,7 @@
 @startuml
+
 autonumber
+
 
 actor "End User (dApp)" as User
 participant "NooSphere Hub" as Chain
@@ -16,11 +18,12 @@ Contract -> Contract ++: Execute contract (update state, process payments).
 
 Contract -> Chain ++: Return execute results.
 
-Chain -> Node ++: Emits `Compute(requestId, ...)` event via API.
+Contract -> Node ++: Emits `Compute(requestId, ...)` event via API.
 note left of Node: NooSphere Node is actively listening for events from the NooSphere Hub.
-Chain --> Node --: Receives `Compute` event
+Node --> Node --: Receives `Compute` event
 
-Node -> AI ++: Perform off-chain computation.
+Node -> AI ++: Request off-chain computation.
+AI -> AI ++: Perform off-chain computation.
 AI --> Node --: Return computation result.
 
 Node -> Node: Generate proof of computation.
