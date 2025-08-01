@@ -1,0 +1,55 @@
+@startuml
+left to right direction
+
+actor "End User (dApp)" as User
+
+rectangle "NooSphere" {
+  actor "NooSphere Hub" as Hub
+  actor "Smart Contract" as Contract
+  actor "NooSphere Node" as Node
+  actor "3rd Party Computation Node" as CNode
+
+  usecase "Request One-Time Computation" as UC1
+  usecase "Create Compute Subscription" as UC2
+  usecase "Cancel Subscription" as UC3
+  usecase "Receive Compute Result" as UC4
+  usecase "Send Compute Request" as UC5
+  usecase "Generate Event" as UC7
+  usecase "Listen Event" as UC8
+  usecase "Generate Compute Result" as UC9
+}
+
+User --> UC1
+User --> UC2
+User --> UC3
+
+'note left of UC1: Node is actively listening for events from the Ritual contracts on-chain.
+
+Hub --|> UC1
+Hub --|> UC2
+Hub --|> UC3
+Hub --|> UC4
+Node --|> UC5
+UC7 --> UC8
+Contract --|> UC7
+Node --|> UC8
+
+
+'Contract --|> UC1
+'Contract --|> UC2
+'Contract --|> UC3
+'Contract --|> UC4
+
+UC1 ..> UC4 : <<include>>
+UC2 ..> UC4 : <<include>>
+Hub ..> Contract : <<include>>
+
+CNode --|> UC9
+'CNode ..> UC9 : <<delivers>>
+'UC6 ..> UC9 : <<delivers>>
+UC9 --> Node
+
+UC5 --> CNode
+Node --> UC4
+
+@enduml
