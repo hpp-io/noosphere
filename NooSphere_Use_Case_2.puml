@@ -1,5 +1,5 @@
 @startuml
-left to right direction
+top to bottom direction
 
 actor "End User (dApp)" as User
 
@@ -33,6 +33,7 @@ Node --|> UC5
 UC7 --> UC8
 Contract --|> UC7
 Node --|> UC8
+UC8 --> Node
 
 
 'Contract --|> UC1
