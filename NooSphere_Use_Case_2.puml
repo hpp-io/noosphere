@@ -7,23 +7,23 @@ rectangle "NooSphere" {
   actor "NooSphere Hub" as Hub
   actor "Smart Contract" as Contract
   actor "NooSphere Node" as Node
-  actor "3rd Party Computation Node" as CNode
+  actor "AI Model Processor" as CNode
 
-  usecase "Request One-Time Computation" as UC1
-  usecase "Create Compute Subscription" as UC2
+  usecase "Request One-Time Subscription" as UC1
+  usecase "Create Recurring Subscription" as UC2
   usecase "Cancel Subscription" as UC3
   usecase "Receive Compute Result" as UC4
   usecase "Send Compute Request" as UC5
   usecase "Generate Event" as UC7
   usecase "Listen Event" as UC8
   usecase "Generate Compute Result" as UC9
+  usecase "Generate Proof" as UC10
+  usecase "Verify Proof" as UC11
 }
 
 User --> UC1
 User --> UC2
 User --> UC3
-
-'note left of UC1: Node is actively listening for events from the Ritual contracts on-chain.
 
 Hub --|> UC1
 Hub --|> UC2
@@ -51,6 +51,12 @@ CNode --|> UC9
 UC9 --> Node
 
 UC5 --> CNode
-Node --> UC4
+
+Node --> UC10
+UC10 --> UC4 : Send Result and Proof
+
+UC4 --> UC11
+
+UC11 --> User
 
 @enduml
