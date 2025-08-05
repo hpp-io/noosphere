@@ -9,7 +9,7 @@ rectangle "NooSphere Hub" {
   usecase "Request Computation" as UC_REQ_COMPUTE
   usecase "View Pending Status" as UC_PENDING
   usecase "View Result" as UC_RESULT
-  usecase "Approve Transaction" as UC_APPROVE
+'  usecase "Approve Transaction" as UC_APPROVE
 }
 
 User -- UC_CONNECT
@@ -17,10 +17,11 @@ User -- UC_INPUT
 User -- UC_REQ_COMPUTE
 User -- UC_PENDING
 User -- UC_RESULT
-User -- UC_APPROVE
+'User -- UC_APPROVE
 
 UC_REQ_COMPUTE ..> UC_CONNECT : <<include>>
 UC_REQ_COMPUTE ..> UC_INPUT : <<include>>
 UC_RESULT ..> UC_PENDING : <<include>>
-UC_RESULT ..> UC_APPROVE : <<extend>>
+'UC_RESULT ..> UC_APPROVE : <<extend>>
+
 @enduml

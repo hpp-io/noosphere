@@ -9,14 +9,14 @@ rectangle "NooSphere" {
   actor "NooSphere Node" as Node
   actor "AI Model Processor" as CNode
 
-  usecase "Request One-Time Subscription" as UC1
-  usecase "Create Recurring Subscription" as UC2
-  usecase "Cancel Subscription" as UC3
-  usecase "Receive Compute Result" as UC4
-  usecase "Send Compute Request" as UC5
+  usecase "Request One-Time Computation" as UC1
+  usecase "Request Recurring Computation" as UC2
+  usecase "Cancel Computation" as UC3
+  usecase "Receive Computation Result" as UC4
+  usecase "Send Computation Request" as UC5
   usecase "Generate Event" as UC7
   usecase "Listen Event" as UC8
-  usecase "Generate Compute Result" as UC9
+  usecase "Generate Computation Result" as UC9
   usecase "Generate Proof" as UC10
   usecase "Verify Proof" as UC11
 }
