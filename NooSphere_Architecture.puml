@@ -1,4 +1,5 @@
 @startuml
+left to right direction
 skinparam backgroundColor #F5F5F5
 skinparam shadowing false
 skinparam componentStyle rectangle
@@ -26,36 +27,39 @@ skinparam titleFontSize 22
 skinparam titleFontColor #000000
 
 title
-NooSphere Ecosystem with Separated Compute Layer
+NooSphere Architecture
 end title
 
 actor "End User\n(dApp)" as User
 actor "AI Model Creator" as AIMC
 
 package "NooSphere Ecosystem" #DFF0D8 {
-    rectangle "NooSphere Hub" as Hub {
+    left to right direction
+    package "NooSphere Hub" as Hub #BFF3FE{
+        left to right direction
         rectangle "Request API" as ReqAPI
         rectangle "Response API" as RespAPI
     }
 
-    rectangle "NooSphere Node Layer" #CFE2F3 {
-        rectangle "Node 1\n- Event Listener\n- Proof Generator" as Node1
-        rectangle "Node 2\n- Event Listener\n- Proof Generator" as Node2
-'        rectangle "Node 3\n- Event Listener\n- Proof Generator" as Node3
-        ...
-        rectangle "Node N\n- Event Listener\n- Proof Generator" as NodeN
-    }
-
-    package "Smart Contract Layer" #FFF5E1 {
+    package "Smart Contract Layer" as Contract #FFF5E1 {
+        left to right direction
         rectangle "Escrow" as Escrow
         rectangle "Request Manager" as ReqManager
     }
+
+    rectangle "NooSphere Node Layer" as Node #CFE2F3 {
+        top to bottom direction
+        rectangle "Node 1\n- Event Listener\n- Proof Generator" as Node1
+'        rectangle "Node 2\n- Event Listener\n- Proof Generator" as Node2
+        ...
+        rectangle "Node N\n- Event Listener\n- Proof Generator" as NodeN
+    }
 }
 
-package "Compute Layer" #E3F2FD {
+package "Compute Layer" as Compute #E3F2FD {
+    top to bottom direction
     rectangle "Processor 1\n- Compute Engine" as AI1
-    rectangle "Processor 2\n- Compute Engine" as AI2
-'    rectangle "Processor 3\n- Compute Engine" as AI3
+'    rectangle "Processor 2\n- Compute Engine" as AI2
     ...
     rectangle "Processor N\n- Compute Engine" as AIN
 }
@@ -64,28 +68,11 @@ User --> ReqAPI : Submit Request
 ReqAPI --> Escrow : Forward Request
 Escrow --> ReqManager : Forward Request
 
-'Contract --> Node1 : Emit Event
-'Node1 --> AI1 : Trigger Computation
-'AI1 --> RespAPI : Return Results + Proof
-
-'Contract --> Node2 : Emit Event
-'Node2 --> AI2 : Trigger Computation
-'AI2 --> RespAPI : Return Results + Proof
-
-'Contract --> Node3 : Emit Event
-'Node3 --> AI3 : Trigger Computation
-'AI3 --> RespAPI : Return Results + Proof
-
-...
-ReqManager --> NodeN : Emit Event
-NodeN --> AIN : Trigger Computation
-AIN --> RespAPI : Return Results + Proof
+ReqManager --> Node : Emit Event
+Node --> Compute : Trigger Computation
+Compute --> RespAPI : Return Results + Proof
 
 RespAPI --> User : Return Results to User
-'AIMC --> AI1 : Deploy AI Models
-'AIMC --> AI2 : Deploy AI Models
-'AIMC --> AI3 : Deploy AI Models
-...
-AIMC --> AIN : Deploy AI Models
+AIMC --> Compute : Deploy AI Models
 
 @enduml
