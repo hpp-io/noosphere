@@ -37,42 +37,49 @@ package "NooSphere Ecosystem" #DFF0D8 {
     left to right direction
     package "NooSphere Hub" as Hub #BFF3FE{
         left to right direction
-        rectangle "Request API" as ReqAPI
-        rectangle "Response API" as RespAPI
+        rectangle "Request API" as RequestAPI
+        rectangle "Response API" as ResponseAPI
+
     }
 
     package "Smart Contract Layer" as Contract #FFF5E1 {
         left to right direction
         rectangle "Escrow" as Escrow
+        rectangle "Verifier" as Verifier
         rectangle "Request Manager" as ReqManager
+        rectangle "Registry" as Registry
     }
 
     rectangle "NooSphere Node Layer" as Node #CFE2F3 {
         top to bottom direction
-        rectangle "Node 1\n- Event Listener\n- Proof Generator" as Node1
+        rectangle "Node 1\n- Event Listener\n- Proof Generator\n- Register Model" as Node1
 '        rectangle "Node 2\n- Event Listener\n- Proof Generator" as Node2
         ...
-        rectangle "Node N\n- Event Listener\n- Proof Generator" as NodeN
+        rectangle "Node N\n- Event Listener\n- Proof Generator\n- Register Model" as NodeN
     }
 }
 
 package "Compute Layer" as Compute #E3F2FD {
     top to bottom direction
-    rectangle "Processor 1\n- Compute Engine" as AI1
+    rectangle "Processor 1\n- Compute\n- Register Model" as AI1
 '    rectangle "Processor 2\n- Compute Engine" as AI2
     ...
-    rectangle "Processor N\n- Compute Engine" as AIN
+    rectangle "Processor N\n- Compute\n- Register Model" as AIN
 }
 
-User --> ReqAPI : Submit Request
-ReqAPI --> Escrow : Forward Request
-Escrow --> ReqManager : Forward Request
+User --> RequestAPI : Submit Request
+RequestAPI --> Escrow : Forward Request
+Escrow --> ReqManager
 
 ReqManager --> Node : Emit Event
 Node --> Compute : Trigger Computation
-Compute --> RespAPI : Return Results + Proof
+Compute --> Node : Return Results
+Node --> Contract : Forward Results and Return Generated Proof
+Contract --> Verifier : Verify Proof
+Verifier --> ResponseAPI :Return Results
+ResponseAPI --> User : Return Results to User
 
-RespAPI --> User : Return Results to User
-AIMC --> Compute : Deploy AI Models
-
+AIMC --> Compute : Create & Deploy AI Models
+Compute --> Node : Request AI Model Registration
+Node --> Registry : Register AI Models
 @enduml
