@@ -1,0 +1,51 @@
+@startuml
+
+title
+NooSphere Register Feature
+end title
+
+
+actor "End User" as User
+participant "NooSphere Hub" as Hub
+participant "NooSphere Authenticator (Keycloak, Wallet)" as Auth
+participant "Smart Contract" as Contract
+
+
+User -> Hub ++: 1. Hub Login.
+User++
+Hub --> Auth ++: 1.1. Auth Login
+Auth--> Hub : 1.2. Auth Login Results
+deactivate Auth
+Hub --> Hub: 1.3. Create Session
+Hub --> User: 1.4. Return session
+deactivate User
+deactivate Hub
+
+User --> Hub++: 2. List My Features
+User++
+Hub --> Contract++: 2.1. List My Features
+Contract --> Hub: 2.2. List My Features Results
+deactivate Contract
+Hub --> User: 2.3. Return List My Features Results
+deactivate User
+deactivate Hub
+
+User --> Hub++: 3. Create New Feature
+User++
+Hub --> Contract++: 3.1. Register Feature
+Contract --> Contract: 3.2. Update State and Make Transaction
+Contract --> Contract: 3.3. Emit Event
+Contract --> Hub: 3.4 Listen Events
+deactivate Contract
+Hub --> User: 3.5. Return Register Feature Results
+deactivate User
+deactivate Hub
+
+
+deactivate Contract
+deactivate User
+deactivate Hub
+
+
+
+@enduml

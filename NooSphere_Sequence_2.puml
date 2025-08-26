@@ -1,5 +1,9 @@
 @startuml
 
+title
+NooSphere One-Time Request
+end title
+
 
 actor "End User" as User
 participant "NooSphere Hub" as Hub
@@ -27,12 +31,13 @@ User++
 Hub --> Contract++: 2.1. Search Features
 Contract --> Hub: 2.2. Search Features Results
 deactivate Contract
-Hub --> User: 2.3. Search Features Results
+Hub --> User: 2.3. Return Search Features Results
 deactivate User
 deactivate Hub
 
-User --> Hub++: 3. Select Feature And Submit One-Time Request
-User++
+
+User --> User++: 3. Select Feature
+User --> Hub++: 3. Submit One-Time Request
 Hub --> Auth++: 3.1. Sign Transaction Request
 Auth --> Hub: 3.2. Sign Transaction Results
 deactivate Auth
