@@ -1,82 +1,76 @@
 @startuml
 
 title
-NooSphere One-Time Request
+NooSphere One-Time Request SDK (Delegate)
 end title
 
 
 actor "End User" as User
-participant "NooSphere Hub" as Hub
-participant "NooSphere Authenticator (Keycloak, Wallet)" as Auth
+participant "Wallet" as Auth
 participant "Smart Contract" as Contract
-participant "NooSphere Validator" as Validator
-participant "NooSphere Queue" as Queue
+participant "NooSphere Verifier" as Verifier
 participant "NooSphere Node" as Node
 participant "AI Processor" as AI
 
 
-User -> Hub ++: 1. Hub Login.
-User++
-Hub --> Auth ++: 1.1. Auth Login
-Auth--> Hub : 1.2. Auth Login Results
-deactivate Auth
-Hub --> Hub: 1.3. Create Session
-Hub --> User: 1.4. Return session
-deactivate User
-deactivate Hub
+group "1 Request Search Features" Steps
+  User --> Contract: 1.1. Search¸Features
+  Contract --> User: 1.2. Return Features
+  User --> User: 1.3. Select Feature
+end
 
+group "2 Submit One-Time Request" Steps
+  User --> Auth: 2.1. Create Signature
+  Auth --> User: 2.2. Return Signature
+  User --> Contract: 2.3. Submit One-Time Request with Signature
+  Contract --> Contract: 2.4. Register Request with data
+  Contract --> Contract: 2.5. Create Transaction
+  Contract --> Contract: 2.6. Emit Event
+end
 
-User --> Hub++: 2. Search Features
-User++
-Hub --> Contract++: 2.1. Search Features
-Contract --> Hub: 2.2. Search Features Results
-deactivate Contract
-Hub --> User: 2.3. Return Search Features Results
-deactivate User
-deactivate Hub
+group "3 Process One-Time Request" Steps
+  Contract --> Node: 3.1 Listen Events
+  Node --> Node: 3.2 Parse Event
+  Node --> Node: 3.3 Prepare One-Time Execution
+  Node --> AI: 3.4 Request One-Time Execution
+  AI --> AI: 3.5 Execute One-Time Request
+end
 
+group "4 Process One-Time Response" Steps
+  AI --> AI: 4.1 Prepare Execution Results
+  AI --> Node: 4.2 Send Execution Results with AI Processor Address
+  Node --> Auth: 4.3. Create Signature
+  Auth --> Node: 4.4. Return Signature
+  Node --> Node: 4.5 Create Proof
+  Node --> Contract: 4.6 Register Results and Proof with Node, AI Processor Addresses
+  Contract --> Contract: 4.7. Create Transaction
+  Contract --> Contract: 4.8 Emit Event
+end
 
-User --> User++: 3. Select Feature
-User --> Hub++: 3. Submit One-Time Request
-Hub --> Auth++: 3.1. Sign Transaction Request
-Auth --> Hub: 3.2. Sign Transaction Results
-deactivate Auth
-Hub --> Contract++: 3.3. Submit One-Time Request
-Contract --> Contract: 3.4. Update State and Make Transaction
-Contract --> Contract: 3.5. Emit Event
-Contract --> Hub: 3.6 Listen Events
-deactivate Contract
-Hub --> Queue++: 3.7 Generate One-Time Execution
-Queue --> Node++: 3.8 Listen Queues
-deactivate Queue
-Node --> AI++: 3.9 Request One-Time Execution
-AI --> AI: 3.10 Execute One-Time Request
-AI --> AI: 3.11 Generate Execution Results
-AI --> Queue: 3.12 Send Execution Results
-deactivate AI
-Queue --> Node: 3.13 Listen Queues
-Node --> Node: 3.14 Create Proof
-Node --> Queue++: 3.15 Send Results with Proof
-deactivate Node
+group "5 Verify One-Time Response" Steps
+  Contract --> Verifier: 5.1 Listen Events
+  Verifier --> Verifier: 5.2 Parse Event
+  Verifier --> Auth: 5.3. Create Signature
+  Auth --> Verifier: 5.4. Return Signature
+  Verifier --> Verifier: 5.5 Verify Proof
+  Verifier --> Contract: 5.6 Register Verification Results
+end
 
-Queue --> Validator++: 3.16 Listen Queue
-Validator --> Validator: 3.17 Verify Proof
-Validator --> Queue: 3.18 Send Validation Results
-deactivate Validator
-deactivate Queue
+group "6 Process One-Time Request Accounting" Steps
+  Contract --> Contract: 6.1 Process Verification Results
+  Contract --> Contract: 6.2 Parse One-Time Response
+  Contract --> Contract: 6.3 Parse Node, AI Model Creator, AI Processor Addresses
+  Contract --> Contract: 6.4. Calculate Fees and Rewards
+  Contract --> Contract: 6.5. Update State
+  Contract --> Contract: 6.6. Create Transaction
+  Contract --> Contract: 6.7 Emit Event
+end
 
-Queue --> Hub: 3.19 Listen Queues
-Hub --> Contract++: 3.20 Submit One-Time Execution Results
-Contract --> Contract: 3.21. Update State and Make Transaction
-Contract --> Contract: 3.5. Emit Event
-Contract --> Hub: 3.22 Listen Events
-deactivate Contract
-Hub --> User: 3.23 Return One-Time Execution Results
-
-deactivate Contract
-deactivate User
-deactivate Hub
-
+group "7 Process One-Time Response" Steps
+  Contract --> User: 7.1 Listen Events
+  User --> User: 7.2 Parse Event
+  User --> User: 7.3 Retrieve One-Time Response
+end
 
 
 @enduml
