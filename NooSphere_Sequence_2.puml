@@ -5,71 +5,108 @@ NooSphere One-Time Request SDK (Delegate)
 end title
 
 
-actor "End User" as User
+actor "SDK User" as User
+actor "AI Model Creator" as Creator
+actor "Resource Provider" as Resource
+actor "Verify Provider" as VP
+
+participant "NooSphere Hub" as Hub
 participant "Wallet" as Auth
 participant "Smart Contract" as Contract
 participant "NooSphere Verifier" as Verifier
 participant "NooSphere Node" as Node
-participant "AI Processor" as AI
+participant "AI Container" as AI
 
-
-group "1 Request Search Features" Steps
-  User --> Contract: 1.1. Search¸Features
-  Contract --> User: 1.2. Return Features
-  User --> User: 1.3. Select Feature
+group "1 Register Container" Steps
+  Creator --> Hub: 1.1 Register Container with wallet address
+  Hub --> Contract: 1.2 Register Container
 end
 
-group "2 Submit One-Time Request" Steps
-  User --> Auth: 2.1. Create Signature
-  Auth --> User: 2.2. Return Signature
-  User --> Contract: 2.3. Submit One-Time Request with Signature
-  Contract --> Contract: 2.4. Register Request with data
-  Contract --> Contract: 2.5. Create Transaction
-  Contract --> Contract: 2.6. Emit Event
+group "2 Register Node" Steps
+  Resource --> Node: 2.1 Register Node with wallet address
+  Node --> Hub: 2.2 Send Registration
+  Hub --> Hub: 2.4 Register Node
+  Hub --> Node: 2.4 Return Result
 end
 
-group "3 Process One-Time Request" Steps
-  Contract --> Node: 3.1 Listen Events
-  Node --> Node: 3.2 Parse Event
-  Node --> Node: 3.3 Prepare One-Time Execution
-  Node --> AI: 3.4 Request One-Time Execution
-  AI --> AI: 3.5 Execute One-Time Request
+group "3 Register Verifier" Steps
+  VP --> Hub: 3.1 Register Verifier with wallet address
+  Hub --> Contract: 3.2 Register Verifier
+  Contract --> Hub: 3.3 Return Result
 end
 
-group "4 Process One-Time Response" Steps
-  AI --> AI: 4.1 Prepare Execution Results
-  AI --> Node: 4.2 Send Execution Results with AI Processor Address
-  Node --> Auth: 4.3. Create Signature
-  Auth --> Node: 4.4. Return Signature
-  Node --> Node: 4.5 Create Proof
-  Node --> Contract: 4.6 Register Results and Proof with Node, AI Processor Addresses
-  Contract --> Contract: 4.7. Create Transaction
-  Contract --> Contract: 4.8 Emit Event
+group "4 Run Container" Steps
+  Resource --> Node: 4.1 Search Containers
+  Node --> Hub: 4.2 Search Containers
+  Hub --> Node: 4.3 Return Containers
+  Node --> Node: 4.4 Select Container to Run
+  Node --> AI: 4.5 Run Container
+  AI --> Node: 4.6 Return Container Status
+  Node --> Hub: 4.7 Update Container Status
+'  Hub --> Contract: 4.8 Register Container to Node Relationship
+'  Contract --> Hub: 4.9 Return Results
 end
 
-group "5 Verify One-Time Response" Steps
-  Contract --> Verifier: 5.1 Listen Events
-  Verifier --> Verifier: 5.2 Parse Event
-  Verifier --> Auth: 5.3. Create Signature
-  Auth --> Verifier: 5.4. Return Signature
-  Verifier --> Verifier: 5.5 Verify Proof
-  Verifier --> Contract: 5.6 Register Verification Results
+group "5 Search Executable Containers" Steps
+  User --> Hub: 5.1. Search Executable Containers
+  Hub --> User: 5.2. Return Executable Containers
+  User --> User: 5.3. Select Executable Container
 end
 
-group "6 Process One-Time Request Accounting" Steps
-  Contract --> Contract: 6.1 Process Verification Results
-  Contract --> Contract: 6.2 Parse One-Time Response
-  Contract --> Contract: 6.3 Parse Node, AI Model Creator, AI Processor Addresses
-  Contract --> Contract: 6.4. Calculate Fees and Rewards
-  Contract --> Contract: 6.5. Update State
-  Contract --> Contract: 6.6. Create Transaction
-  Contract --> Contract: 6.7 Emit Event
+group "6 Submit One-Time Request" Steps
+  User --> Auth: 6.1. Create Signature
+  Auth --> User: 6.2. Return Signature
+  User --> Node: 6.3. Submit One-Time Request with Signature
+'  Node --> Contract: 6.4. Register Request with data
+  Node --> Contract: 6.5. Create Transaction
+  Contract --> Contract: 6.6. Emit Event
 end
 
-group "7 Process One-Time Response" Steps
-  Contract --> User: 7.1 Listen Events
-  User --> User: 7.2 Parse Event
-  User --> User: 7.3 Retrieve One-Time Response
+group "7 Process One-Time Request" Steps
+  Contract --> Node: 7.1 Lookup Events
+  Node --> Node: 7.2 Parse Event
+  Node --> Node: 7.3 Prepare One-Time Execution
+  Node --> AI: 7.4 Request One-Time Execution
+  AI --> AI: 7.5 Execute One-Time Request
+end
+
+group "8 Process One-Time Response" Steps
+  AI --> AI: 8.1 Prepare Execution Results
+  AI --> Node: 8.2 Send Execution Results
+  Node --> Auth: 8.3 Create Signature
+  Auth --> Node: 8.4 Return Signature
+  Node --> Contract: 8.5 Calculate Fee
+  Contract --> Node: 8.6 Return Calculation Result
+  Node --> Node: 8.7 Create Proof
+  Node --> Contract: 8.8 Register Results and Proof
+  Contract --> Contract: 8.9 Create Transaction
+  Contract --> Contract: 8.10 Emit Event
+end
+
+group "9 Verify One-Time Response" Steps
+  Contract --> Verifier: 9.1 Lookup Events
+  Verifier --> Verifier: 9.2 Parse Event
+  Verifier --> Auth: 9.3. Create Signature
+  Auth --> Verifier: 9.4. Return Signature
+  Verifier --> Verifier: 9.5 Verify Proof
+  Verifier --> Contract: 9.6 Register Results
+ Contract --> Contract: 9.7 Emit Event
+end
+
+'group "10 Process One-Time Request Accounting" Steps
+'  Contract --> Contract: 10.1 Process Verification Results
+'  Contract --> Contract: 10.2 Parse One-Time Response
+'  Contract --> Contract: 10.3 Parse Node, AI Model Creator, AI Processor Addresses
+'  Contract --> Contract: 10.4 Calculate Fees and Rewards
+'  Contract --> Contract: 10.5 Update State
+'  Contract --> Contract: 10.6 Create Transaction
+'  Contract --> Contract: 10.7 Emit Event
+'end
+
+group "10 Process One-Time Response" Steps
+  Contract --> User: 10.1 Lookup Events
+  User --> User: 10.2 Parse Event
+  User --> User: 10.3 Retrieve One-Time Response
 end
 
 
