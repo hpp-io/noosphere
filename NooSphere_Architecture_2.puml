@@ -1,0 +1,92 @@
+@startuml
+left to right direction
+skinparam backgroundColor #F5F5F5
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam ArrowColor #1E90FF
+skinparam ArrowThickness 2
+skinparam roundcorner 20
+skinparam rectangle {
+    FontName Calibri
+    FontSize 12
+    BackgroundColor #EFF3FE
+    FontColor #000000
+    BorderColor #4682B4
+}
+
+skinparam actor {
+    FontName Calibri
+    FontSize 12
+    BackgroundColor #FFFFFF
+    FontColor #000000
+    BorderColor #000000
+}
+
+skinparam titleFontName Calibri
+skinparam titleFontSize 22
+skinparam titleFontColor #000000
+
+title
+NooSphere Architecture
+end title
+
+actor "End User\n(dApp)" as User
+actor "AI Model Creator" as AIMC
+
+package "NooSphere Ecosystem" #DFF0D8 {
+    left to right direction
+
+    package "NooSphere Compute Layer" as Compute #AFA0D8 {
+      left to right direction
+      package "NooSphere Processor 2" #DFF0D8 {
+        rectangle "NooSphere Node 2\n- Event Listener\n- Proof Generator\n- Register Model" as Node2
+        rectangle "NooSphere Processor 2\n- Compute\n- Register Model" as AI2
+      }
+
+      package "NooSphere Processor 1" #DFF0D8 {
+        rectangle "NooSphere Node 1\n- Event Listener\n- Proof Generator\n- Register Model" as Node1
+        rectangle "NooSphere Processor 1\n- Compute\n- Register Model" as AI1
+      }
+
+    }
+
+    package "NooSphere Hub" as Hub #BFF3FE{
+        left to right direction
+        rectangle "Request API" as RequestAPI
+        rectangle "Response API" as ResponseAPI
+
+    }
+
+    package "Smart Contract Layer" as Contract #FFF5E1 {
+        left to right direction
+        rectangle "Escrow" as Escrow
+        rectangle "Verifier" as Verifier
+        rectangle "Request Manager" as ReqManager
+        rectangle "Registry" as Registry
+    }
+
+}
+
+AIMC --> Node1 : 1. Create & Deploy AI Models
+AI1 --> Node1 : 2. Request AI Model Registration
+Node1 --> Registry : 3. Register AI Models
+
+User --> RequestAPI : 4. Submit Request
+RequestAPI --> Escrow : 5. Process Fees
+Escrow --> ReqManager : 6. Forward Request
+ReqManager --> ReqManager
+
+ReqManager --> Node1 : 7. Create Transaction and Emit Event
+Node1 --> AI1 : 8. Trigger Computation
+AI1 --> Node1 : 9. Return Results
+Node1 --> Verifier : 10. Forward Results and Return Generated Proof
+Verifier --> Verifier : 11. Verify Proof
+Verifier --> ResponseAPI : 12. Return Results
+ResponseAPI --> User : 13. Return Results to User
+
+
+'Hub --> Node1 : 14. Request Monitoring Data
+'Node1 --> Hub : 15. Return Monitoring Status
+
+
+@enduml
